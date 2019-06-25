@@ -1,0 +1,14 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+click = "*"
+anpr-cli = {editable = true,path = "."}
+anprx = {editable = true,git = "https://github.com/ppintosilva/anprx.git",ref = "v0.1.3"}
+
+[requires]
+python_version = "3.7"
