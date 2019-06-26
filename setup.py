@@ -9,6 +9,6 @@ setup(
     ],
     entry_points='''
         [console_scripts]
-        anpr=anpr:cli
+        anpr=cli.anpr:cli
     ''',
 )
