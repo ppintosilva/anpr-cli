@@ -1,6 +1,7 @@
 """anpr-cli: A CLI for pre-processing and analysing batches of ANPR data."""
 
 import click
+import anprx
 
 from .wrangle import cameras as cameras
 from .wrangle import network as network
@@ -16,9 +17,13 @@ class PipelineCLI(click.Group):
         return ['wrangle', 'compute', 'explore']
 
 # Main group - entry point
+@click.option("--verbose", "-v", count = True)
 @click.group(cls=PipelineCLI)
-def cli():
-    pass
+def cli(verbose):
+    anprx.utils.config(
+        app_folder = ".temp",
+        log_to_console = verbose
+    )
 
 # Data wrangling operations
 @cli.group(chain = True)
