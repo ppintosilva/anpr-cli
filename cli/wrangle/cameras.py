@@ -15,6 +15,7 @@ import pandas as pd
 @click.option(
     '--output-format',
     type=click.Choice(['geojson', 'csv']),
+    show_default = True,
     default = 'geojson',
     required = False,
     help = "Format of the output file with the wrangled cameras dataset"
@@ -29,6 +30,7 @@ import pandas as pd
 @click.option(
     '--skip-lines',
     default = 0,
+    show_default = True,
     type = int,
     required = False,
     help = "Number of lines to skip at the start of the file."
