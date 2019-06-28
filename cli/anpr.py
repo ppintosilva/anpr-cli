@@ -17,12 +17,15 @@ class PipelineCLI(click.Group):
         return ['wrangle', 'compute', 'explore']
 
 # Main group - entry point
-@click.option("--verbose", "-v", count = True)
+@click.option("--verbose", "-v", count = True, show_default = True)
+@click.option("--app_folder", "-p", default = ".temp",
+              type = str, show_default = True)
 @click.group(cls=PipelineCLI)
-def cli(verbose):
+def cli(verbose, app_folder):
     anprx.utils.config(
-        app_folder = ".temp",
-        log_to_console = verbose
+        app_folder = app_folder,
+        log_to_console = verbose,
+        cache = True
     )
 
 # Data wrangling operations
