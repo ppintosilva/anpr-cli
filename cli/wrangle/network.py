@@ -3,6 +3,7 @@ import  geopandas           as gpd
 import  networkx            as nx
 
 from    anprx.preprocessing import network_from_cameras
+from    anprx.preprocessing import merge_cameras_network
 
 @click.argument(
     'output',
@@ -55,7 +56,7 @@ from    anprx.preprocessing import network_from_cameras
 )
 @click.option(
     '--figure-format',
-    default = 'svg',
+    default = 'png',
     show_default = True,
     required = False,
     help = "Format of output figures"
@@ -95,7 +96,8 @@ def network(
         clean_intersections = clean,
         tolerance = clean_tolerance,
         make_plots = figures,
-        file_format = figure_format
+        file_format = figure_format,
+        fig_height = 14
     )
 
     if output_format == "pkl":
@@ -105,13 +107,122 @@ def network(
     elif output_format == "shapefile":
         nx.write_shp(G, output)
 
-# @click.command()
-# def merge_cameras():
-#     """
-#     Merge a graph of the road network with the location of the cameras such that
-#     each camera is mapped onto one edge of the graph.
-#     """
-#     pass
+    return 0
+
+#-------------------------------------------------------------------------------
+@click.argument(
+    'output',
+    type = str,
+)
+@click.argument(
+    'input_network',
+    type=click.File('rb')
+)
+@click.argument(
+    'input_cameras',
+    type=click.File('rb')
+)
+@click.option(
+    '--cameras-format',
+    type=click.Choice(['geojson', 'csv']),
+    default = 'geojson',
+    show_default = True,
+    required = False,
+    help = "Format of the input file with the wrangled cameras dataset"
+)
+@click.option(
+    '--network-format',
+    type=click.Choice(['pkl', 'graphml', 'shapefile']),
+    default = 'pkl',
+    show_default = True,
+    required = False,
+    help = "Format of the input file with the (unmerged) network graph"
+)
+@click.option(
+    '--output-format',
+    type=click.Choice(['pkl', 'graphml', 'shapefile']),
+    default = 'pkl',
+    show_default = True,
+    required = False,
+    help = "Format of the output file with the (unmerged) network graph"
+)
+@click.option(
+    '--passes',
+    default = 3,
+    show_default = True,
+    required = False,
+    help = "Number of passes."
+)
+@click.option(
+    '--figures/--no-figures',
+    default = True,
+    show_default = True,
+    help = "Make graph plots and save them to app_folder"
+)
+@click.option(
+    '--figure-format',
+    default = 'png',
+    show_default = True,
+    required = False,
+    help = "Format of output figures"
+)
+@click.command()
+def merge(
+    input_cameras,
+    input_network,
+    output,
+    cameras_format,
+    network_format,
+    output_format,
+    passes,
+    figures,
+    figure_format
+):
+    """
+    Merge a set of cameras with a road network graph.
+    """
+
+    if cameras_format == "geojson":
+        cameras = gpd.GeoDataFrame.from_file(input_cameras)
+    elif cameras_format == "csv":
+        cameras = pd.read_csv(
+            filepath_or_buffer = input_cameras,
+            sep    = ',',
+            header = 0,
+            dtype  = {
+                "id": object,
+                "name": object,
+                "lat": np.float64,
+                "lon": np.float64,
+                "is_commissioned" : bool,
+                "description" : object
+            }
+        )
+
+    if network_format == "pkl":
+        G = nx.read_gpickle(input_network)
+    elif network_format == "graphml":
+        G = nx.read_graphml(input_network)
+    elif network_format == "shapefile":
+        G = nx.read_shp(input_network)
+
+    G = merge_cameras_network(
+        G,
+        cameras,
+        passes = passes,
+        plot = figures,
+        figure_format = figure_format,
+        fig_height = 14
+    )
+
+    if output_format == "pkl":
+        nx.write_gpickle(G, output)
+    elif output_format == "graphml":
+        nx.write_graphml(G, output)
+    elif output_format == "shapefile":
+        nx.write_shp(G, output)
+
+    return 0
 
 # @click.command()
 # def all_camera_pairs():
@@ -121,15 +232,3 @@ def network(
 #     """
 #     pass
 #
-# @click.command()
-# def raw_anpr():
-#     """
-#     Wrangle a csv file containing raw ANPR data:
-#         - Filter bad number plates
-#         - Remove all sightings with confidence < THRESHOLD
-#         - Sort by Timestamp
-#         - Anonymise (if necessary)
-#         - Identify trips
-#         - Outlier detection: duplicates, vehicles travelling too fast
-#     """
-#     pass
