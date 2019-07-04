@@ -4,6 +4,7 @@ import  networkx            as nx
 
 from    anprx.preprocessing import network_from_cameras
 from    anprx.preprocessing import merge_cameras_network
+from    anprx.preprocessing import camera_pairs_from_graph
 
 @click.argument(
     'output',
@@ -70,6 +71,8 @@ def network(
     figures, figure_format
 ):
     """
+    Obtain the road network graph from OpenStreetMap.
+
     Obtain the road network graph for a set of ANPR cameras from OpenStreetMap.
     """
 
@@ -224,11 +227,39 @@ def merge(
 
     return 0
 
-# @click.command()
-# def all_camera_pairs():
-#     """
-#     Compute the k-shortest routes and the total driving distance for all valid
-#     combinations of cameras pairs : (origin, destination).
-#     """
-#     pass
-#
+
+@click.argument(
+    'output',
+    type = str,
+)
+@click.argument(
+    'input_network',
+    type=click.File('rb')
+)
+@click.option(
+    '--network-format',
+    type=click.Choice(['pkl', 'graphml', 'shapefile']),
+    default = 'pkl',
+    show_default = True,
+    required = False,
+    help = "Format of the input file with merged network graph"
+)
+@click.command()
+def camera_pairs(input_network, output, network_format):
+    """
+    Compute valid camera pairs and their distance.
+
+    Compute the shortest route and the total driving distance for all valid
+    combinations of cameras pairs : (origin, destination).
+    """
+
+    if network_format == "pkl":
+        G = nx.read_gpickle(input_network)
+    elif network_format == "graphml":
+        G = nx.read_graphml(input_network)
+    elif network_format == "shapefile":
+        G = nx.read_shp(input_network)
+
+    pairs = camera_pairs_from_graph(G)
+
+    pairs.to_csv(output, index = False)
