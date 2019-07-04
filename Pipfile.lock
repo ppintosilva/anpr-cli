@@ -29,7 +29,7 @@
         "anprx": {
             "editable": true,
             "git": "https://github.com/ppintosilva/anprx.git",
-            "ref": "4d90a900d446486bf12f3b17385d3620b513901f"
+            "ref": "bbd7d62a881cc34048d125cdb39167fc150eca65"
         },
         "attrs": {
             "hashes": [

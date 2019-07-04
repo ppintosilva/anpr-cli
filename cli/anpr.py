@@ -21,17 +21,24 @@ class WranglePipeline(click.Group):
     def list_commands(self, ctx):
         """A CLI for wrangling and analysing batches of ANPR data."""
         # original value --> return sorted(self.commands)
-        return ['cameras', 'network', 'merge']
+        return ['cameras', 'network', 'merge', 'camera-pairs']
 
 # Main group - entry point
-@click.option("--verbose", "-v", count = True, show_default = True)
-@click.option("--app_folder", "-p", default = ".temp",
-              type = str, show_default = True)
+@click.option("--quiet", "-q",
+                is_flag = True,
+                default = False,
+                show_default = True
+)
+@click.option("--app_folder", "-p",
+              default = ".temp",
+              type = str,
+              show_default = True
+)
 @click.group(cls=PipelineCLI)
-def cli(verbose, app_folder):
+def cli(quiet, app_folder):
     anprx.utils.config(
         app_folder = app_folder,
-        log_to_console = verbose,
+        log_to_console = not quiet,
         cache_http = True
     )
 
@@ -51,4 +58,5 @@ def compute():
 wrangle.add_command(cameras.cameras)
 wrangle.add_command(network.network)
 wrangle.add_command(network.merge)
+wrangle.add_command(network.camera_pairs)
 compute.add_command(flows.flows)
