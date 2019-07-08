@@ -98,7 +98,7 @@ def network(
         filter_residential = not residential,
         clean_intersections = clean,
         tolerance = clean_tolerance,
-        make_plots = figures,
+        plot = figures,
         file_format = figure_format,
         fig_height = 14
     )
@@ -263,3 +263,5 @@ def camera_pairs(input_network, output, network_format):
     pairs = camera_pairs_from_graph(G)
 
     pairs.to_csv(output, index = False)
+
+    return 0
