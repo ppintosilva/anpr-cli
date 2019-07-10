@@ -26,13 +26,14 @@ class WranglePipeline(click.Group):
 # Main group - entry point
 @click.option("--quiet", "-q",
                 is_flag = True,
-                default = False,
-                show_default = True
+                default = False              ,
+                help = "Suppress printing log messages to console."
 )
 @click.option("--app_folder", "-p",
               default = ".temp",
               type = str,
-              show_default = True
+              show_default = True,
+              help = "Path to work directory (logs, images, files)"
 )
 @click.group(cls=PipelineCLI)
 def cli(quiet, app_folder):
