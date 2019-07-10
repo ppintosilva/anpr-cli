@@ -5,7 +5,7 @@ import numpy  as np
 import pandas as pd
 
 @click.argument(
-    'output',
+    'output-geojson',
     type = str,
 )
 @click.argument(
@@ -13,19 +13,19 @@ import pandas as pd
     type=click.File('rb')
 )
 @click.option(
-    '--output-format',
-    type=click.Choice(['geojson', 'csv']),
-    show_default = True,
-    default = 'geojson',
-    required = False,
-    help = "Format of the output file with the wrangled cameras dataset"
-)
-@click.option(
     '--names',
     type = str,
     default = None,
     required = False,
     help = "Names of columns in the input csv file"
+)
+@click.option(
+    '--distance',
+    type = float,
+    default = 50.0,
+    required = False,
+    help = ("Merge cameras within distance meters, that have the "
+            "same address and direction")
 )
 @click.option(
     '--skip-lines',
@@ -36,7 +36,7 @@ import pandas as pd
     help = "Number of lines to skip at the start of the file."
 )
 @click.command()
-def cameras(input_csv, output, output_format, names, skip_lines):
+def cameras(input_csv, output_geojson, names, skip_lines, distance):
     """
     Wrangle a raw dataset of ANPR cameras.
 
@@ -77,9 +77,8 @@ def cameras(input_csv, output, output_format, names, skip_lines):
             raw_cameras.csv \\
             wrangled_cameras.geojson
 
-    If the output format is GeoJSON (default), the cameras coordinates are
-    projected into UTM coordinates. Working with UTM coordinates is useful
-    further down on the processing pipeline when cameras are mapped onto the
+    The cameras coordinates are projected into UTM coordinates.
+    Working with UTM coordinates is useful to merge cameras onto the
     road network (see command wrangle merge-cameras).
 
     This script uses anprx to wrangle the cameras dataset. For more
@@ -105,31 +104,22 @@ def cameras(input_csv, output, output_format, names, skip_lines):
 
     col_names = names.split(',') if names else cameras.columns.values
 
-    has_description = ('description' in col_names)
-
-    infer_direction_col       = 'description' if has_description else False
-    drop_car_park             = 'description' if has_description else False
-    extract_address           = 'description' if has_description else False
-    extract_road_category     = 'description' if has_description else False
-    drop_is_test              = 'name' if ('name' in col_names) else False
-    drop_is_not_commissioned  = ('is_commissioned' in col_names)
-
-    proj_coords = (output_format == "geojson")
+    has_name             = ('name' in col_names)
+    has_description      = ('description' in col_names)
+    has_is_commissioned  = ('is_commissioned' in col_names)
 
     wcameras = preprocessing.wrangle_cameras(
-        cameras                   = cameras,
-        infer_direction_col       = infer_direction_col,
-        drop_car_park             = drop_car_park,
-        extract_address           = extract_address,
-        extract_road_category     = extract_road_category,
-        project_coords            = proj_coords,
-        drop_is_test              = drop_is_test,
-        drop_is_not_commissioned  = drop_is_not_commissioned
+        cameras               = cameras,
+        is_test_col           = "name" if has_name else False,
+        is_commissioned_col   = "is_commissioned" if has_is_commissioned else False,
+        road_attr_col         = "description" if has_description else False,
+        drop_car_park         = True,
+        drop_na_direction     = True,
+        distance_threshold    = distance,
+        sort_by               = 'id'
     )
-    if proj_coords:
-        wcameras.to_file(output, driver='GeoJSON')
-    elif output_format == "csv":
-        wcameras.to_csv(output, index = False)
+
+    wcameras.to_file(output_geojson, driver='GeoJSON')
 
     return 0
 
