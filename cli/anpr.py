@@ -57,6 +57,7 @@ def compute():
 
 
 wrangle.add_command(cameras.cameras)
+wrangle.add_command(cameras.nodes)
 wrangle.add_command(network.network)
 wrangle.add_command(network.merge)
 wrangle.add_command(network.camera_pairs)

@@ -3,6 +3,7 @@ from anprx import preprocessing
 
 import numpy  as np
 import pandas as pd
+import geopandas as gpd
 
 @click.argument(
     'output-geojson',
@@ -120,6 +121,95 @@ def cameras(input_csv, output_geojson, names, skip_lines, distance):
     )
 
     wcameras.to_file(output_geojson, driver='GeoJSON')
+
+    return 0
+
+###
+
+@click.argument(
+    'output-nodes-geojson',
+    type = str,
+)
+@click.argument(
+    'input-cameras-geojson',
+    type=click.File('rb')
+)
+@click.argument(
+    'input-nodes-csv',
+    type=click.File('rb')
+)
+@click.option(
+    '--names',
+    type = str,
+    default = None,
+    required = False,
+    help = "Names of columns in the input csv file"
+)
+@click.option(
+    '--distance',
+    type = float,
+    default = 100.0,
+    required = False,
+    help = ("Map nodes to cameras within distance meters, that have the "
+            "same address and direction")
+)
+@click.option(
+    '--skip-lines',
+    default = 0,
+    show_default = True,
+    type = int,
+    required = False,
+    help = "Number of lines to skip at the start of the file."
+)
+@click.command()
+def nodes(input_nodes_csv,
+          input_cameras_geojson,
+          output_nodes_geojson,
+          names,
+          skip_lines,
+          distance
+):
+    """
+    Wrangle a raw dataset of Nodes.
+    """
+
+    raw_nodes = pd.read_csv(
+        filepath_or_buffer = input_nodes_csv,
+        sep    = ',',
+        names  = names.split(',') if names else None,
+        header = None if names else 0,
+        skiprows = skip_lines,
+        dtype  = {
+            "id": object,
+            "name": object,
+            "lat": np.float64,
+            "lon": np.float64,
+            "is_commissioned" : bool,
+            "description" : object
+        }
+    )
+
+    col_names = names.split(',') if names else raw_nodes.columns.values
+
+    has_name             = ('name' in col_names)
+    has_description      = ('description' in col_names)
+    has_is_commissioned  = ('is_commissioned' in col_names)
+
+    cameras = gpd.GeoDataFrame.from_file(input_cameras_geojson)
+
+    wnodes = preprocessing.map_nodes_cameras(
+        nodes                 = raw_nodes,
+        cameras               = cameras,
+        is_test_col           = "name" if has_name else False,
+        is_commissioned_col   = "is_commissioned" if has_is_commissioned else False,
+        road_attr_col         = "description" if has_description else False,
+        drop_car_park         = True,
+        drop_na_direction     = True,
+        distance_threshold    = distance,
+        sort_by               = 'id'
+    )
+
+    wnodes.to_file(output_nodes_geojson, driver='GeoJSON')
 
     return 0
 
