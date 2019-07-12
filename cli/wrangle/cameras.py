@@ -36,8 +36,18 @@ import geopandas as gpd
     required = False,
     help = "Number of lines to skip at the start of the file."
 )
+@click.option(
+    '--merge-cameras',
+    default = True,
+    show_default = True,
+    type = bool,
+    required = False,
+    help ="Whether to merge nearby cameras with the same address and direction."
+)
 @click.command()
-def cameras(input_csv, output_geojson, names, skip_lines, distance):
+def cameras(input_csv, output_geojson,
+            names, skip_lines,
+            distance, merge_cameras):
     """
     Wrangle a raw dataset of ANPR cameras.
 
@@ -117,7 +127,8 @@ def cameras(input_csv, output_geojson, names, skip_lines, distance):
         drop_car_park         = True,
         drop_na_direction     = True,
         distance_threshold    = distance,
-        sort_by               = 'id'
+        sort_by               = 'id',
+        merge_cameras         = merge_cameras
     )
 
     wcameras.to_file(output_geojson, driver='GeoJSON')
