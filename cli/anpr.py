@@ -21,7 +21,7 @@ class WranglePipeline(click.Group):
     def list_commands(self, ctx):
         """A CLI for wrangling and analysing batches of ANPR data."""
         # original value --> return sorted(self.commands)
-        return ['cameras', 'network', 'merge', 'camera-pairs']
+        return ['cameras', 'network', 'merge', 'camera-pairs', 'nodes']
 
 # Main group - entry point
 @click.option("--quiet", "-q",
