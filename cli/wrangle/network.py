@@ -149,7 +149,7 @@ def network(
 )
 @click.option(
     '--subdir',
-    default = "cameras/unmerged",
+    default = "cameras/merged",
     show_default = True,
     required = False,
     help = ("Where to save close-up camera figures within the working "

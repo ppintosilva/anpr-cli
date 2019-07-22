@@ -23,7 +23,7 @@ import geopandas as gpd
 @click.option(
     '--distance',
     type = float,
-    default = 50.0,
+    default = 100.0,
     required = False,
     help = ("Merge cameras within distance meters, that have the "
             "same address and direction")
