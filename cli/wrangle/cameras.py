@@ -1,9 +1,12 @@
 import click
-from anprx import preprocessing
 
-import numpy  as np
-import pandas as pd
+from anprx       import preprocessing
+from anprx.utils import log
+
+import numpy     as np
+import pandas    as pd
 import geopandas as gpd
+import logging   as lg
 
 @click.argument(
     'output-geojson',
@@ -224,10 +227,104 @@ def nodes(input_nodes_csv,
 
     return 0
 
-# @wrangle.command()
-# def expert_camera_pairs():
-#     """
-#     Wrangle a csv file containing information about the pairs of cameras used by
-#     traffic operators, and other experts, to reason about the flow of traffic.
-#     """
-#     pass
+@click.argument(
+    'output-pairs-csv',
+    type = str,
+)
+@click.argument(
+    'input-nodes-geojson',
+    type=click.File('rb')
+)
+@click.argument(
+    'input-links-csv',
+    type=click.File('rb')
+)
+@click.option(
+    '--names',
+    type = str,
+    default = None,
+    required = False,
+    help = "Names of columns in the input csv file"
+)
+@click.option(
+    '--skip-lines',
+    default = 0,
+    show_default = True,
+    type = int,
+    required = False,
+    help = "Number of lines to skip at the start of the file."
+)
+@click.command()
+def expert_pairs(
+    input_links_csv,
+    input_nodes_geojson,
+    output_pairs_csv,
+    names,
+    skip_lines
+):
+    """
+    Merge a file with
+
+    Wrangle a csv file containing information about the pairs of cameras used by
+    traffic operators, and other experts, to reason about the flow of traffic.
+    """
+
+    nodes = gpd.GeoDataFrame.from_file(input_nodes_geojson)
+    nodes = nodes[['id', 'camera']]
+
+    links = pd.read_csv(
+        filepath_or_buffer = input_links_csv,
+        sep    = ',',
+        names  = names.split(',') if names else None,
+        header = None if names else 0,
+        skiprows = skip_lines,
+        dtype  = {
+            "id": object,
+            "description" : object,
+            "start_node": object,
+            "end_node": object
+        }
+    )
+
+    links_start = pd.merge(
+        links[['id', 'description', 'start_node']],
+        nodes,
+        how = 'left',
+        left_on = 'start_node',
+        right_on = 'id',
+        suffixes = ('_link', '_node'))
+
+    links_end = pd.merge(
+        links[['id', 'end_node']],
+        nodes,
+        how = 'left',
+        left_on = 'end_node',
+        right_on = 'id',
+        suffixes = ('_link', '_node'))
+
+    pairs = pd.merge(
+        links_start, links_end, 'inner',
+        on = 'id_link',
+        suffixes = ('_start', '_end'))
+
+    if len(pairs) != len(links):
+        log(("Length of resulting expert camera pairs (n = {}) "
+             "is different than input links file (n = {})")\
+                .format(len(pairs), len(links)),
+            level = lg.WARNING)
+
+    pairs = pairs[['id_link', 'description',
+                   'camera_start', 'camera_end']]
+    pairs = pairs.rename(columns = {
+        'id_link' : 'id',
+        'camera_start'   : 'start_camera',
+        'camera_end'     : 'end_camera'
+    })
+
+    log(("Determined expert camera pairs from wrangled nodes and links "
+         "input files and saved output to {}")\
+            .format(output_pairs_csv),
+        level = lg.INFO)
+
+    pairs[['id', 'start_camera', 'end_camera', 'description']]\
+        .to_csv(output_pairs_csv, index = False)
