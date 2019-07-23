@@ -34,5 +34,6 @@ anpr wrangle nodes \
 
 # Get 'expert camera-pairs' from links and wrangled nodes
 anpr wrangle expert-pairs \
+ data/raw_links.csv data/wrangled_nodes.geojson data/expert-pairs.csv
 
 ```
