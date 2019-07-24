@@ -29,7 +29,7 @@
         "anprx": {
             "editable": true,
             "git": "https://github.com/ppintosilva/anprx.git",
-            "ref": "e7054a6b48d4f84554508bfe7f3a5a7e9408af65"
+            "ref": "5793be4a98c00584cc2e847ae5107574bf32c964"
         },
         "attrs": {
             "hashes": [
@@ -99,9 +99,10 @@
         },
         "docutils": {
             "hashes": [
-                "sha256:ba4584f9107571ced0d2c7f56a5499c696215ba90797849c92d395979da68521"
+                "sha256:554158db07870b514e8df93800e95ee8fbf2a2388eb453c7f69206532a8a6fa5",
+                "sha256:82725b1051b92aaa42e240a4e5d6fafa2f6f5a2b5023b23a51c941dd7d863369"
             ],
-            "version": "==0.15.post1"
+            "version": "==0.15.1"
         },
         "fiona": {
             "hashes": [
@@ -261,10 +262,10 @@
         },
         "pyparsing": {
             "hashes": [
-                "sha256:530d8bf8cc93a34019d08142593cf4d78a05c890da8cf87ffa3120af53772238",
-                "sha256:f78e99616b6f1a4745c0580e170251ef1bbafc0d0513e270c4bd281bf29d2800"
+                "sha256:1873c03321fc118f4e9746baf201ff990ceb915f433f23b395f5580d1840cb2a",
+                "sha256:9b6323ef4ab914af344ba97510e966d64ba91055d6b9afa6b30799340e89cc03"
             ],
-            "version": "==2.4.1"
+            "version": "==2.4.0"
         },
         "pyproj": {
             "hashes": [

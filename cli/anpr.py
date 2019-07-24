@@ -5,7 +5,8 @@ import anprx
 
 from .wrangle import cameras as cameras
 from .wrangle import network as network
-from .compute import flows as flows
+from .wrangle import data    as data
+from .compute import flows   as flows
 
 
 # Custom class so that we can change the order of subcommands as diplayed
@@ -22,7 +23,7 @@ class WranglePipeline(click.Group):
         """A CLI for wrangling and analysing batches of ANPR data."""
         # original value --> return sorted(self.commands)
         return ['cameras', 'network', 'merge', 'camera-pairs', 'nodes',
-                'expert-pairs']
+                'expert-pairs', 'raw-anpr']
 
 # Main group - entry point
 @click.option("--quiet", "-q",
@@ -63,4 +64,5 @@ wrangle.add_command(cameras.expert_pairs)
 wrangle.add_command(network.network)
 wrangle.add_command(network.merge)
 wrangle.add_command(network.camera_pairs)
+wrangle.add_command(data.raw_anpr)
 compute.add_command(flows.flows)

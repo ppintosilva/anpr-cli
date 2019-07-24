@@ -36,4 +36,12 @@ anpr wrangle nodes \
 anpr wrangle expert-pairs \
  data/raw_links.csv data/wrangled_nodes.geojson data/expert-pairs.csv
 
+# Wrangle one raw anpr csv file
+anpr wrangle raw-anpr \
+  --confidence-threshold 70.0 \
+  --cameras-geojson data/wrangled_cameras.geojson \
+  --names "vehicle,camera,timestamp,confidence" \
+  --skip-lines 0 \
+  data/npdata_Jan_2019_9days.csv data/wrangled_anpr_Jan_2019_9days.pkl
+
 ```
