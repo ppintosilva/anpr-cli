@@ -141,6 +141,13 @@ def network(
     help = "Dpi of images"
 )
 @click.option(
+    '--camera-range',
+    default = 50.0,
+    show_default = True,
+    required = False,
+    help = "Camera range, in meters."
+)
+@click.option(
     '--fig-height',
     default = 14,
     show_default = True,
@@ -160,7 +167,7 @@ def merge(
     input_cameras_geojson,
     input_network_pkl,
     output_pkl,
-    passes,
+    passes, camera_range,
     figures, figure_format,
     dpi, fig_height, subdir
 ):
@@ -176,6 +183,7 @@ def merge(
         G,
         cameras,
         passes = passes,
+        camera_range = camera_range,
         plot = figures,
         figure_format = figure_format,
         fig_height = fig_height,
