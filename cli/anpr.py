@@ -7,6 +7,7 @@ from .wrangle import cameras as cameras
 from .wrangle import network as network
 from .wrangle import data    as data
 from .compute import flows   as flows
+from .compute import trips   as trips
 
 
 # Custom class so that we can change the order of subcommands as diplayed
@@ -24,6 +25,12 @@ class WranglePipeline(click.Group):
         # original value --> return sorted(self.commands)
         return ['cameras', 'network', 'merge', 'camera-pairs', 'nodes',
                 'expert-pairs', 'raw-anpr']
+
+class ComputePipeline(click.Group):
+    def list_commands(self, ctx):
+        """A CLI for transforming and aggregating wrangled ANPR data."""
+        # original value --> return sorted(self.commands)
+        return ['trips', 'flows']
 
 # Main group - entry point
 @click.option("--quiet", "-q",
@@ -52,7 +59,7 @@ def wrangle():
     pass
 
 # Summarise operations, e.g.: compute flows
-@cli.group()
+@cli.group(cls=ComputePipeline)
 def compute():
     """Summarise wrangled data into traffic flows."""
     pass
@@ -65,4 +72,5 @@ wrangle.add_command(network.network)
 wrangle.add_command(network.merge)
 wrangle.add_command(network.camera_pairs)
 wrangle.add_command(data.raw_anpr)
+compute.add_command(trips.trips)
 compute.add_command(flows.flows)

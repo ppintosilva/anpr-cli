@@ -23,7 +23,7 @@ anpr wrangle merge \
   data/wrangled_cameras.geojson data/raw_network.pkl data/merged_network.pkl
 
 # Compute valid camera-pairs
-anpr wrangle camera-pairs \  
+anpr wrangle camera-pairs \
   data/merged_network.pkl data/camera-pairs.csv
 
 # Wrangle nodes
