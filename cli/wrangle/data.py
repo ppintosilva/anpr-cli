@@ -42,13 +42,13 @@ import logging   as lg
 )
 @click.option(
     '--anonymise/--no-anonymise',
-    is_flag = True,
+    default = True,
     show_default = True,
     help = "Anonymise vehicle license numbers"
 )
 @click.option(
-    '--filter-confidence/--keep-confidence',
-    is_flag = True,
+    '--filter/--no-filter',
+    default = True,
     show_default = True,
     help = "Filter low confidence observations"
 )
@@ -93,7 +93,7 @@ def raw_anpr(
     skip_lines,
     cameras_geojson,
     anonymise,
-    filter_confidence,
+    filter,
     confidence_threshold,
     digest_size,
     digest_salt,
@@ -141,7 +141,7 @@ def raw_anpr(
     wrangled_anpr = preprocessing.wrangle_raw_anpr(
         raw_anpr,
         cameras = cameras,
-        filter_low_confidence = filter_confidence,
+        filter_low_confidence = filter,
         confidence_threshold = confidence_threshold,
         anonymise = anonymise,
         digest_size = digest_size,
