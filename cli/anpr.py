@@ -61,7 +61,7 @@ def wrangle():
 # Summarise operations, e.g.: compute flows
 @cli.group(cls=ComputePipeline)
 def compute():
-    """Summarise wrangled data into traffic flows."""
+    """Identify trips in wrangled data and summarise it into traffic flows."""
     pass
 
 

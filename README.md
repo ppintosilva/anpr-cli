@@ -42,6 +42,18 @@ anpr wrangle raw-anpr \
   --cameras-geojson data/wrangled_cameras.geojson \
   --names "vehicle,camera,timestamp,confidence" \
   --skip-lines 0 \
-  data/npdata_Jan_2019_9days.csv data/wrangled_anpr_Jan_2019_9days.pkl
+  data/NPDATA.csv data/wrangled_NPDATA.pkl
+
+anpr compute trips \
+  --max-speed 120.0 \
+  --duplicate-threshold 150.0 \
+  --speed-threshold 3.0 \
+  data/wrangled_NPDATA.pkl data/camera-pairs.csv data/trips_NPDATA.pkl
+
+anpr compute flows \
+  --freq "5T" \
+  --output-format "csv" \
+  --single-precision \
+  data/trips_NPDATA.pkl data/flows_NPDATA.csv
 
 ```
