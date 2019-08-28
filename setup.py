@@ -6,6 +6,7 @@ setup(
     py_modules=['anpr'],
     install_requires=[
         'Click',
+        'anprx'
     ],
     entry_points='''
         [console_scripts]
