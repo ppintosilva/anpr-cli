@@ -40,17 +40,16 @@ import logging   as lg
     help = "Number of lines to skip at the start of the file."
 )
 @click.option(
-    '--merge-cameras',
+    '--merge/--not-merge',
     default = True,
     show_default = True,
-    type = bool,
     required = False,
     help ="Whether to merge nearby cameras with the same address and direction."
 )
 @click.command()
 def cameras(input_csv, output_geojson,
             names, skip_lines,
-            distance, merge_cameras):
+            distance, merge):
     """
     Wrangle a raw dataset of ANPR cameras.
 
@@ -131,7 +130,7 @@ def cameras(input_csv, output_geojson,
         drop_na_direction     = True,
         distance_threshold    = distance,
         sort_by               = 'id',
-        merge_cameras         = merge_cameras
+        merge_cameras         = merge
     )
 
     wcameras.to_file(output_geojson, driver='GeoJSON')
