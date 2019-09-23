@@ -3,10 +3,12 @@ from setuptools import setup
 setup(
     name='anpr-cli',
     version='0.1',
-    py_modules=['anpr'],
+    url="https://github.com/ppintosilva/anpr-cli",
+    author_email="ppintodasilva@gmail.com",
+    py_modules=[],
     install_requires=[
         'Click',
-        'anprx'
+        'anprx@git+https://github.com/ppintosilva/anprx@v0.1.3'
     ],
     entry_points='''
         [console_scripts]
