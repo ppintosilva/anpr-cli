@@ -6,8 +6,7 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-click = "*"
-anprx = {git = "https://github.com/ppintosilva/anprx.git",ref = "v0.1.3"}
+anprx = {editable = true,git = "https://github.com/ppintosilva/anprx.git",ref = "v0.1.3"}
 anpr-cli = {editable = true,path = "."}
 
 [requires]

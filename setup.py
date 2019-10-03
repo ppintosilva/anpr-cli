@@ -7,12 +7,12 @@ setup(
     author_email="ppintodasilva@gmail.com",
     py_modules=[],
     install_requires=[
-        'Click',
+        'click',
         'anprx >= 0.1.3'
     ],
     entry_points='''
         [console_scripts]
         anpr=cli.anpr:cli
     ''',
-    dependency_links = ['http://github.com/ppintosilva/anpr-cli/tarball/v0.1.3#egg=package-1.0']
+    dependency_links = ['git+https://github.com/ppintosilva/anprx/tarball/v0.1.3#egg=anprx']
 )
