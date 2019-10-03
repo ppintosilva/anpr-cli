@@ -8,7 +8,7 @@ setup(
     py_modules=[],
     install_requires=[
         'Click',
-        'anprx@git+https://github.com/ppintosilva/anprx@v0.1.3'
+        'anprx@git+https://github.com/ppintosilva/anprx/tarball/v0.1.3#egg=anprx'
     ],
     entry_points='''
         [console_scripts]
