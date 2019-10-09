@@ -56,7 +56,7 @@ def displacement(
     df = all_ods_displacement(df, buffer_size, parallel)
 
     if output:
-        df.to_pickle(output_pkl)
+        df.to_pickle(output)
     else:
         # write to same input to save space
         df.to_pickle(input_pkl)
