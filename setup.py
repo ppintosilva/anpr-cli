@@ -13,6 +13,5 @@ setup(
     entry_points='''
         [console_scripts]
         anpr=cli.anpr:cli
-    ''',
-    dependency_links = ['git+https://github.com/ppintosilva/anprx/tarball/v0.1.3#egg=anprx']
+    '''
 )
