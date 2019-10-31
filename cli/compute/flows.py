@@ -56,6 +56,13 @@ import logging   as lg
     show_default = True,
     help = ("Use single instead of double precision float types.")
 )
+@click.option(
+    '--skip-explicit',
+    is_flag = True,
+    default = False,
+    show_default = True,
+    help = "Skip filling in missing spatio-temporal combinations: (od, period)"
+)
 
 @click.command()
 def flows(
@@ -65,7 +72,8 @@ def flows(
     freq,
     drop_na,
     agg_displacement,
-    single_precision):
+    single_precision,
+    skip_explicit):
     """Compute flows between camera pairs from wrangled data."""
 
     log(("Reading input pkl file with wrangled trip data of size {:,.2f} MB.")\
@@ -77,7 +85,8 @@ def flows(
     flows = get_flows(trips, freq,
                       agg_displacement = agg_displacement,
                       remove_na = drop_na,
-                      single_precision = single_precision)
+                      single_precision = single_precision,
+                      skip_explicit = skip_explicit)
 
     if output_format == "csv":
         flows.to_csv(output, index = False)
