@@ -1,10 +1,14 @@
+import  os
 import  click
 import  geopandas           as gpd
+import  osmnx               as ox
 import  networkx            as nx
+import  pathlib
 
 from    anprx.preprocessing import network_from_cameras
 from    anprx.preprocessing import merge_cameras_network
 from    anprx.preprocessing import camera_pairs_from_graph
+from    anprx.preprocessing import gdfs_from_network
 
 @click.argument(
     'output-pkl',
@@ -15,16 +19,23 @@ from    anprx.preprocessing import camera_pairs_from_graph
     type=click.File('rb')
 )
 @click.option(
-    '--residential',
-    is_flag = True,
+    '--road-type',
+    type=click.Choice(['all', 'primary', 'arterial'], case_sensitive=False),
+    default = 'primary',
     show_default = True,
-    help = "Retrieve residential and service roads from OpenStreetMap"
+    help = "Retrieve all or a subset of all roads from OpenStreetMap"
 )
 @click.option(
     '--clean',
     is_flag = True,
     show_default = True,
     help = "Clean intersections in the road graph"
+)
+@click.option(
+    '--output-geojson',
+    is_flag = True,
+    show_default = True,
+    help = "Also output network in geojson"
 )
 @click.option(
     '--clean-tolerance',
@@ -71,7 +82,8 @@ from    anprx.preprocessing import camera_pairs_from_graph
 @click.command()
 def network(
     input_geojson, output_pkl,
-    residential,
+    road_type,
+    output_geojson,
     clean, clean_tolerance,
     figures, figure_format,
     dpi, fig_height, subdir
@@ -86,7 +98,7 @@ def network(
 
     G = network_from_cameras(
         cameras,
-        filter_residential = not residential,
+        road_type = road_type,
         clean_intersections = clean,
         tolerance = clean_tolerance,
         plot = figures,
@@ -97,6 +109,18 @@ def network(
     )
 
     nx.write_gpickle(G, output_pkl)
+
+    if output_geojson:
+        stem = os.path.splitext(output_pkl)[0]
+
+        nodes_gdf, edges_gdf = gdfs_from_network(G)
+
+        nodes_gdf.to_file('{}_nodes.geojson'.format(stem),
+                          drive = 'GeoJSON')
+
+        edges_gdf.to_file('{}_edges.geojson'.format(stem),
+                          drive = 'GeoJSON')
+
 
     return 0
 
@@ -119,6 +143,12 @@ def network(
     show_default = True,
     required = False,
     help = "Number of passes."
+)
+@click.option(
+    '--output-geojson',
+    is_flag = True,
+    show_default = True,
+    help = "Also output network in geojson"
 )
 @click.option(
     '--figures/--no-figures',
@@ -167,6 +197,7 @@ def merge(
     input_cameras_geojson,
     input_network_pkl,
     output_pkl,
+    output_geojson,
     passes, camera_range,
     figures, figure_format,
     dpi, fig_height, subdir
@@ -191,7 +222,18 @@ def merge(
         subdir = subdir
     )
 
-    nx.write_gpickle(G, output_pkl,)
+    nx.write_gpickle(G, output_pkl)
+
+    if output_geojson:
+        stem = os.path.splitext(output_pkl)[0]
+
+        nodes_gdf, edges_gdf = gdfs_from_network(G)
+
+        nodes_gdf.to_file('{}_nodes.geojson'.format(stem),
+                          drive = 'GeoJSON')
+
+        edges_gdf.to_file('{}_edges.geojson'.format(stem),
+                          drive = 'GeoJSON')
 
     return 0
 
