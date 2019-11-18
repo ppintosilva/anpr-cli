@@ -116,10 +116,10 @@ def network(
         nodes_gdf, edges_gdf = gdfs_from_network(G)
 
         nodes_gdf.to_file('{}_nodes.geojson'.format(stem),
-                          drive = 'GeoJSON')
+                          driver = 'GeoJSON')
 
         edges_gdf.to_file('{}_edges.geojson'.format(stem),
-                          drive = 'GeoJSON')
+                          driver = 'GeoJSON')
 
 
     return 0
@@ -230,10 +230,10 @@ def merge(
         nodes_gdf, edges_gdf = gdfs_from_network(G)
 
         nodes_gdf.to_file('{}_nodes.geojson'.format(stem),
-                          drive = 'GeoJSON')
+                          driver = 'GeoJSON')
 
         edges_gdf.to_file('{}_edges.geojson'.format(stem),
-                          drive = 'GeoJSON')
+                          driver = 'GeoJSON')
 
     return 0
 
