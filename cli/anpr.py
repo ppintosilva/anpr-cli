@@ -9,6 +9,7 @@ from .wrangle import data    as data
 from .compute import flows   as flows
 from .compute import trips   as trips
 from .compute import displacement   as displacement
+from .convert import network as convert_network
 
 
 # Custom class so that we can change the order of subcommands as diplayed
@@ -17,7 +18,7 @@ class PipelineCLI(click.Group):
     def list_commands(self, ctx):
         """A CLI for wrangling and analysing batches of ANPR data."""
         # original value --> return sorted(self.commands)
-        return ['wrangle', 'compute', 'explore']
+        return ['wrangle', 'convert', 'compute', 'explore']
 
 
 class WranglePipeline(click.Group):
@@ -65,6 +66,12 @@ def compute():
     """Identify trips in wrangled data and summarise it into traffic flows."""
     pass
 
+# Convert between file types
+@cli.group()
+def convert():
+    """Convert between different file types."""
+    pass
+
 
 wrangle.add_command(cameras.cameras)
 wrangle.add_command(cameras.nodes)
@@ -76,3 +83,4 @@ wrangle.add_command(data.raw_anpr)
 compute.add_command(trips.trips)
 compute.add_command(flows.flows)
 compute.add_command(displacement.displacement)
+convert.add_command(convert_network.network)

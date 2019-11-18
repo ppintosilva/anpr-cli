@@ -32,12 +32,6 @@ from    anprx.preprocessing import gdfs_from_network
     help = "Clean intersections in the road graph"
 )
 @click.option(
-    '--output-geojson',
-    is_flag = True,
-    show_default = True,
-    help = "Also output network in geojson"
-)
-@click.option(
     '--clean-tolerance',
     default = 20,
     show_default = True,
@@ -83,15 +77,12 @@ from    anprx.preprocessing import gdfs_from_network
 def network(
     input_geojson, output_pkl,
     road_type,
-    output_geojson,
     clean, clean_tolerance,
     figures, figure_format,
     dpi, fig_height, subdir
 ):
     """
     Obtain the road network graph from OpenStreetMap.
-
-    Obtain the road network graph for a set of ANPR cameras from OpenStreetMap.
     """
 
     cameras = gpd.GeoDataFrame.from_file(input_geojson)
@@ -109,18 +100,6 @@ def network(
     )
 
     nx.write_gpickle(G, output_pkl)
-
-    if output_geojson:
-        stem = os.path.splitext(output_pkl)[0]
-
-        nodes_gdf, edges_gdf = gdfs_from_network(G)
-
-        nodes_gdf.to_file('{}_nodes.geojson'.format(stem),
-                          driver = 'GeoJSON')
-
-        edges_gdf.to_file('{}_edges.geojson'.format(stem),
-                          driver = 'GeoJSON')
-
 
     return 0
 
@@ -143,12 +122,6 @@ def network(
     show_default = True,
     required = False,
     help = "Number of passes."
-)
-@click.option(
-    '--output-geojson',
-    is_flag = True,
-    show_default = True,
-    help = "Also output network in geojson"
 )
 @click.option(
     '--figures/--no-figures',
@@ -197,7 +170,6 @@ def merge(
     input_cameras_geojson,
     input_network_pkl,
     output_pkl,
-    output_geojson,
     passes, camera_range,
     figures, figure_format,
     dpi, fig_height, subdir
@@ -223,17 +195,6 @@ def merge(
     )
 
     nx.write_gpickle(G, output_pkl)
-
-    if output_geojson:
-        stem = os.path.splitext(output_pkl)[0]
-
-        nodes_gdf, edges_gdf = gdfs_from_network(G)
-
-        nodes_gdf.to_file('{}_nodes.geojson'.format(stem),
-                          driver = 'GeoJSON')
-
-        edges_gdf.to_file('{}_edges.geojson'.format(stem),
-                          driver = 'GeoJSON')
 
     return 0
 
