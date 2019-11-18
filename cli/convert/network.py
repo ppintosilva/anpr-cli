@@ -46,8 +46,7 @@ format_to_extension = dict(zip(supported_out_formats,
 )
 @click.option(
     '--out-format',
-    type=click.Choice(supported_out_formats,
-                      case_sensitive=False),
+    type=click.Choice(supported_out_formats),
     default = "ESRI Shapefile"
 )
 @click.option(
