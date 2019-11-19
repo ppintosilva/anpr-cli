@@ -34,8 +34,8 @@ supported_out_formats = \
 """
 
 supported_out_format_extensions = \
-    ['bna', 'dxf', 'csv', 'shp', 'geojson', 'geojsonseq',
-     'gpkg', 'gml', 'gpx', 'gtm', 'mapinfo']
+    ['.bna', '.dxf', '.csv', '', '.geojson', '.geojsonseq',
+     '.gpkg', '.gml', '.gpx', '.gtm', '.mapinfo']
 
 format_to_extension = dict(zip(supported_out_formats,
                                supported_out_format_extensions))
@@ -77,10 +77,10 @@ def network(
 
     extension = format_to_extension[out_format]
 
-    nodes_gdf.to_file('{}_nodes.{}'.format(out_stem, extension),
+    nodes_gdf.to_file('{}_nodes{}'.format(out_stem, extension),
                       driver = out_format)
 
-    edges_gdf.to_file('{}_edges.{}'.format(out_stem, extension),
+    edges_gdf.to_file('{}_edges{}'.format(out_stem, extension),
                       driver = out_format)
 
     return 0
