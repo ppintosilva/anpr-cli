@@ -200,7 +200,7 @@ def merge(
 
 
 @click.argument(
-    'output-csv',
+    'output-geojson',
     type = str,
 )
 @click.argument(
@@ -208,7 +208,7 @@ def merge(
     type=click.File('rb')
 )
 @click.command()
-def camera_pairs(input_pkl, output_csv):
+def camera_pairs(input_pkl, output_geojson):
     """
     Compute valid camera pairs and their distance.
 
@@ -220,6 +220,6 @@ def camera_pairs(input_pkl, output_csv):
 
     pairs = camera_pairs_from_graph(G)
 
-    pairs.to_csv(output_csv, index = False)
+    pairs.to_file(output_geojson, driver='GeoJSON')    
 
     return 0

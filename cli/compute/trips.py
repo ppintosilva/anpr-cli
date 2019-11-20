@@ -15,7 +15,7 @@ import logging   as lg
     type=str
 )
 @click.argument(
-    'input-pairs-csv',
+    'input-pairs-geojson',
     type=str
 )
 @click.argument(
@@ -51,7 +51,7 @@ import logging   as lg
 @click.command()
 def trips(
     output_pkl,
-    input_pairs_csv,
+    input_pairs_geojson,
     input_anpr_pkl,
     speed_threshold,
     duplicate_threshold,
@@ -66,20 +66,7 @@ def trips(
 
     anpr = pd.read_pickle(input_anpr_pkl)
 
-    camera_pairs = pd.read_csv(
-        filepath_or_buffer = input_pairs_csv,
-        sep    = ',',
-        header = 0,
-        dtype  = {
-            "origin": object,
-            "destination": object,
-            "distance": np.float64,
-            "direction_origin": object,
-            "direction_destination": object,
-            "path" : object,
-            "valid" : bool
-        },
-    )
+    camera_pairs = gpd.GeoDataFrame.from_file(input_pairs_geojson)
 
     click.echo("Running trip identification. This may take a while...")
 
