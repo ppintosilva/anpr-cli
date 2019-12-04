@@ -9,6 +9,7 @@ from    anprx.preprocessing import network_from_cameras
 from    anprx.preprocessing import merge_cameras_network
 from    anprx.preprocessing import camera_pairs_from_graph
 from    anprx.preprocessing import gdfs_from_network
+from    anprx.nominatim     import get_amenities
 
 @click.argument(
     'output-pkl',
@@ -220,6 +221,29 @@ def camera_pairs(input_pkl, output_geojson):
 
     pairs = camera_pairs_from_graph(G)
 
-    pairs.to_file(output_geojson, driver='GeoJSON')    
+    pairs.to_file(output_geojson, driver='GeoJSON')
+
+    return 0
+
+
+@click.argument(
+    'output-geojson',
+    type = str,
+)
+@click.argument(
+    'input-geojson',
+    type=click.File('rb')
+)
+@click.command()
+def amenities(input_geojson, output_geojson):
+    """
+    Get amenities within a geographical polygon.
+    """
+
+    gdf = gpd.GeoDataFrame.from_file(input_geojson)
+
+    amenities = get_amenities(gdf.iloc[0].geometry)
+
+    amenities.to_file(output_geojson, driver='GeoJSON')
 
     return 0
