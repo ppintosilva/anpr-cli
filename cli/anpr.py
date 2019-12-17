@@ -3,13 +3,13 @@
 import click
 import anprx
 
-from .wrangle import cameras as cameras
-from .wrangle import network as network
-from .wrangle import data    as data
-from .compute import flows   as flows
-from .compute import trips   as trips
+from .wrangle import cameras        as cameras
+from .wrangle import network        as network
+from .wrangle import data           as data
+from .compute import flows          as flows
+from .compute import trips          as trips
 from .compute import displacement   as displacement
-from .convert import network as convert_network
+from .convert import network        as convert_network
 
 
 # Custom class so that we can change the order of subcommands as diplayed

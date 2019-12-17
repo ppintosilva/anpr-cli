@@ -1,10 +1,10 @@
 import os
 import click
 import fiona
-import networkx             as nx
-import geopandas            as gpd
+import networkx         as nx
+import geopandas        as gpd
 
-from   anprx.preprocessing  import gdfs_from_network
+from   anprx.cameras    import gdfs_from_network
 
 
 supported_out_formats = \

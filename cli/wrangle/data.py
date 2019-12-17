@@ -1,7 +1,7 @@
 import click
 
-from anprx       import preprocessing
-from anprx.utils import log
+from anprx.cameras  import wrangle_raw_anpr
+from anprx.utils    import log
 
 import os
 import numpy     as np
@@ -138,7 +138,7 @@ def raw_anpr(
     cameras = None if cameras_geojson is None else \
               gpd.GeoDataFrame.from_file(cameras_geojson)
 
-    wrangled_anpr = preprocessing.wrangle_raw_anpr(
+    wrangled_anpr = wrangle_raw_anpr(
         raw_anpr,
         cameras = cameras,
         filter_low_confidence = filter,

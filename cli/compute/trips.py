@@ -1,6 +1,6 @@
 import click
 
-from anprx.compute import trip_identification
+from anprx.trips import trip_identification
 from anprx.utils import log
 
 import os

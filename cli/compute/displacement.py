@@ -1,6 +1,6 @@
 import click
 
-from anprx.compute import all_ods_displacement
+from anprx.trips import all_ods_displacement
 
 import os
 import numpy     as np

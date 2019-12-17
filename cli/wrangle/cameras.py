@@ -1,7 +1,8 @@
 import click
 
-from anprx       import preprocessing
-from anprx.utils import log
+from anprx.cameras  import wrangle_cameras
+from anprx.cameras  import map_nodes_cameras
+from anprx.utils    import log
 
 import numpy     as np
 import pandas    as pd
@@ -121,7 +122,7 @@ def cameras(input_csv, output_geojson,
     has_description      = ('description' in col_names)
     has_is_commissioned  = ('is_commissioned' in col_names)
 
-    wcameras = preprocessing.wrangle_cameras(
+    wcameras = wrangle_cameras(
         cameras               = cameras,
         is_test_col           = "name" if has_name else False,
         is_commissioned_col   = "is_commissioned" if has_is_commissioned else False,
@@ -210,7 +211,7 @@ def nodes(input_nodes_csv,
 
     cameras = gpd.GeoDataFrame.from_file(input_cameras_geojson)
 
-    wnodes = preprocessing.map_nodes_cameras(
+    wnodes = map_nodes_cameras(
         nodes                 = raw_nodes,
         cameras               = cameras,
         is_test_col           = "name" if has_name else False,

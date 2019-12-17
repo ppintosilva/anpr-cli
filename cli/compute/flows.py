@@ -1,6 +1,6 @@
 import click
 
-from anprx.compute import get_flows
+from anprx.flows import get_flows
 from anprx.utils import log
 
 import os
@@ -63,7 +63,6 @@ import logging   as lg
     show_default = True,
     help = "Skip filling in missing spatio-temporal combinations: (od, period)"
 )
-
 @click.command()
 def flows(
     input_trips_pkl,

@@ -5,10 +5,10 @@ import  osmnx               as ox
 import  networkx            as nx
 import  pathlib
 
-from    anprx.preprocessing import network_from_cameras
-from    anprx.preprocessing import merge_cameras_network
-from    anprx.preprocessing import camera_pairs_from_graph
-from    anprx.preprocessing import gdfs_from_network
+from    anprx.cameras       import network_from_cameras
+from    anprx.cameras       import merge_cameras_network
+from    anprx.cameras       import camera_pairs_from_graph
+from    anprx.cameras       import gdfs_from_network
 from    anprx.nominatim     import get_amenities
 
 @click.argument(
@@ -25,19 +25,6 @@ from    anprx.nominatim     import get_amenities
     default = 'primary',
     show_default = True,
     help = "Retrieve all or a subset of all roads from OpenStreetMap"
-)
-@click.option(
-    '--clean',
-    is_flag = True,
-    show_default = True,
-    help = "Clean intersections in the road graph"
-)
-@click.option(
-    '--clean-tolerance',
-    default = 20,
-    show_default = True,
-    required = False,
-    help = "Tolerance parameter when --clean flag is activated."
 )
 @click.option(
     '--figures/--no-figures',
@@ -78,7 +65,6 @@ from    anprx.nominatim     import get_amenities
 def network(
     input_geojson, output_pkl,
     road_type,
-    clean, clean_tolerance,
     figures, figure_format,
     dpi, fig_height, subdir
 ):
@@ -91,8 +77,6 @@ def network(
     G = network_from_cameras(
         cameras,
         road_type = road_type,
-        clean_intersections = clean,
-        tolerance = clean_tolerance,
         plot = figures,
         file_format = figure_format,
         fig_height = fig_height,
