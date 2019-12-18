@@ -43,20 +43,6 @@ import logging   as lg
             "(first and last steps of each trip)")
 )
 @click.option(
-    '--agg-displacement',
-    is_flag = True,
-    default = False,
-    show_default = True,
-    help = ("Include vehicle displacement in aggregate metrics.")
-)
-@click.option(
-    '--single-precision',
-    is_flag = True,
-    default = False,
-    show_default = True,
-    help = ("Use single instead of double precision float types.")
-)
-@click.option(
     '--skip-explicit',
     is_flag = True,
     default = False,
@@ -70,8 +56,6 @@ def flows(
     output_format,
     freq,
     drop_na,
-    agg_displacement,
-    single_precision,
     skip_explicit):
     """Compute flows between camera pairs from wrangled data."""
 
@@ -82,9 +66,7 @@ def flows(
     trips = pd.read_pickle(input_trips_pkl)
 
     flows = get_flows(trips, freq,
-                      agg_displacement = agg_displacement,
                       remove_na = drop_na,
-                      single_precision = single_precision,
                       skip_explicit = skip_explicit)
 
     if output_format == "csv":
