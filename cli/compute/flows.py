@@ -1,6 +1,8 @@
 import click
 
 from anprx.flows import get_flows
+from anprx.flows import get_periods
+from anprx.flows import expand_flows
 from anprx.utils import log
 
 import os
@@ -66,8 +68,15 @@ def flows(
     trips = pd.read_pickle(input_trips_pkl)
 
     flows = get_flows(trips, freq,
-                      remove_na = drop_na,
-                      skip_explicit = skip_explicit)
+                      remove_na = drop_na)
+
+    if not skip_explicit:
+        periods = get_periods(trips, freq)[:-1]
+
+        flows = expand_flows(
+            flows.set_index(['origin','destination','period']),
+            periods
+        )
 
     if output_format == "csv":
         flows.to_csv(output, index = False)
