@@ -51,6 +51,23 @@ import logging   as lg
     show_default = True,
     help = "Skip filling in missing spatio-temporal combinations: (od, period)"
 )
+@click.option(
+    '--pthreshold',
+    default = .02,
+    show_default = True,
+    help = ("A trip step only counts towards the total flow of vehiles"
+            " travelling between o and d during time interval t, if the "
+            " corresponding travel time interval intersects at least pthreshold"
+            " proportion of t.")
+)
+@click.option(
+    '--same-period',
+    is_flag = True,
+    default = False,
+    show_default = True,
+    help = ("Assume that trip steps start and end in the same time interval"
+            "(valid for longer discretasion periods: e.g. hour, day, week).")
+)
 @click.command()
 def flows(
     input_trips_pkl,
@@ -58,7 +75,9 @@ def flows(
     output_format,
     freq,
     drop_na,
-    skip_explicit):
+    skip_explicit,
+    pthreshold,
+    same_period):
     """Compute flows between camera pairs from wrangled data."""
 
     log(("Reading input pkl file with wrangled trip data of size {:,.2f} MB.")\
@@ -68,14 +87,14 @@ def flows(
     trips = pd.read_pickle(input_trips_pkl)
 
     flows = get_flows(trips, freq,
-                      remove_na = drop_na)
+                      remove_na = drop_na,
+                      interval_pthreshold = pthreshold,
+                      same_period = same_period)
 
     if not skip_explicit:
-        periods = get_periods(trips, freq)[:-1]
-
         flows = expand_flows(
-            flows.set_index(['origin','destination','period']),
-            periods
+            flows =flows.set_index(['origin','destination','period']),
+            periods = get_periods(trips, freq)
         )
 
     if output_format == "csv":
