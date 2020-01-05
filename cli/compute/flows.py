@@ -45,15 +45,17 @@ import logging   as lg
             "(first and last steps of each trip)")
 )
 @click.option(
-    '--skip-explicit',
+    '--expand',
     is_flag = True,
     default = False,
     show_default = True,
-    help = "Skip filling in missing spatio-temporal combinations: (od, period)"
+    help = ("Expand flows with missing spatio-temporal combinations of "
+            "(o, d, period) (zero-flow od flows).")
 )
 @click.option(
     '--pthreshold',
     default = .02,
+    type = float,
     show_default = True,
     help = ("A trip step only counts towards the total flow of vehiles"
             " travelling between o and d during time interval t, if the "
@@ -66,7 +68,7 @@ import logging   as lg
     default = False,
     show_default = True,
     help = ("Assume that trip steps start and end in the same time interval"
-            "(valid for longer discretasion periods: e.g. hour, day, week).")
+            "(valid for longer discretisation periods: e.g. hour, day, week).")
 )
 @click.command()
 def flows(
@@ -75,7 +77,7 @@ def flows(
     output_format,
     freq,
     drop_na,
-    skip_explicit,
+    expand,
     pthreshold,
     same_period):
     """Compute flows between camera pairs from wrangled data."""
@@ -91,11 +93,8 @@ def flows(
                       interval_pthreshold = pthreshold,
                       same_period = same_period)
 
-    if not skip_explicit:
-        flows = expand_flows(
-            flows =flows.set_index(['origin','destination','period']),
-            periods = get_periods(trips, freq)
-        )
+    if expand:
+        flows = expand_flows(flows = flows)
 
     if output_format == "csv":
         flows.to_csv(output, index = False)
