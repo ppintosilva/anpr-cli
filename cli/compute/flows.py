@@ -53,14 +53,23 @@ import logging   as lg
             "(o, d, period) (zero-flow od flows).")
 )
 @click.option(
+    '--apply-pthreshold',
+    is_flag = True,
+    default = False,
+    show_default = True,
+    help = ("A trip step only counts towards the total flow of vehiles"
+            " travelling between o and d during time interval t, if the"
+            " corresponding travel time interval intersects at least pthreshold"
+            " proportion of t.")
+)
+@click.option(
     '--pthreshold',
     default = .02,
     type = float,
     show_default = True,
-    help = ("A trip step only counts towards the total flow of vehiles"
-            " travelling between o and d during time interval t, if the "
-            " corresponding travel time interval intersects at least pthreshold"
-            " proportion of t.")
+    help = ("Minimum proportion of time required for a vehicle's "
+            "trip step to count towards the total flow of vehicles "
+            "during that period.")
 )
 @click.option(
     '--same-period',
@@ -78,6 +87,7 @@ def flows(
     freq,
     drop_na,
     expand,
+    apply_pthreshold,
     pthreshold,
     same_period):
     """Compute flows between camera pairs from wrangled data."""
@@ -91,7 +101,8 @@ def flows(
     dtrips = discretise_time(
         trips,
         freq = freq,
-        interval_pthreshold = pthreshold,
+        apply_pthreshold = apply_pthreshold,
+        pthreshold = pthreshold,
         same_period = same_period
     )
 
