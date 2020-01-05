@@ -1,7 +1,7 @@
 import click
 
+from anprx.flows import discretise_time
 from anprx.flows import get_flows
-from anprx.flows import get_periods
 from anprx.flows import expand_flows
 from anprx.utils import log
 
@@ -88,13 +88,17 @@ def flows(
 
     trips = pd.read_pickle(input_trips_pkl)
 
-    flows = get_flows(trips, freq,
-                      remove_na = drop_na,
-                      interval_pthreshold = pthreshold,
-                      same_period = same_period)
+    dtrips = discretise_time(
+        trips,
+        freq = freq,
+        interval_pthreshold = pthreshold,
+        same_period = same_period
+    )
+
+    flows = get_flows(dtrips, remove_na = drop_na)
 
     if expand:
-        flows = expand_flows(flows = flows)
+        flows = expand_flows(flows)
 
     if output_format == "csv":
         flows.to_csv(output, index = False)
