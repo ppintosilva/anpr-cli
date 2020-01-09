@@ -33,7 +33,7 @@ class ComputePipeline(click.Group):
     def list_commands(self, ctx):
         """A CLI for transforming and aggregating wrangled ANPR data."""
         # original value --> return sorted(self.commands)
-        return ['trips', 'displacement', 'flows']
+        return ['avspeed', 'trips', 'displacement', 'flows']
 
 # Main group - entry point
 @click.option("--quiet", "-q",
@@ -83,6 +83,7 @@ wrangle.add_command(network.camera_pairs)
 wrangle.add_command(network.amenities)
 wrangle.add_command(data.raw_anpr)
 compute.add_command(trips.trips)
+compute.add_command(trips.avspeed)
 compute.add_command(flows.flows)
 compute.add_command(displacement.displacement)
 convert.add_command(convert_network.network)

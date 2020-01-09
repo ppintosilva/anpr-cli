@@ -1,5 +1,7 @@
 import click
 
+from anprx.trips import transform_anpr
+from anprx.trips import calculate_avspeed
 from anprx.trips import trip_identification
 from anprx.utils import log
 
@@ -58,7 +60,7 @@ def trips(
     max_speed
 ):
     """
-    Identify trips for a batch of wrangled ANPR data.
+    Identify trips for a batch of wrangled anpr data.
     """
     log(("Reading input pkl file with wrangled anpr data of size {:,.2f} MB.")\
             .format(os.stat(input_anpr_pkl).st_size/1e6),
@@ -78,5 +80,44 @@ def trips(
     )
 
     trips.to_pickle(output_pkl)
+
+    return 0
+
+
+@click.argument(
+    'output-pkl',
+    type=str
+)
+@click.argument(
+    'input-pairs-geojson',
+    type=str
+)
+@click.argument(
+    'input-anpr-pkl',
+    type=str
+)
+@click.command()
+def avspeed(
+    output_pkl,
+    input_pairs_geojson,
+    input_anpr_pkl
+):
+    """
+    Transform wrangled anpr data and compute vehicle
+    avspeed using shortest path distance.
+    """
+    log(("Reading input pkl file with wrangled anpr data of size {:,.2f} MB.")\
+            .format(os.stat(input_anpr_pkl).st_size/1e6),
+        level = lg.INFO)
+
+    anpr = pd.read_pickle(input_anpr_pkl)
+
+    camera_pairs = gpd.GeoDataFrame.from_file(input_pairs_geojson)
+
+    t_anpr = transform_anpr(anpr)
+
+    t_anpr = calculate_avspeed(t_anpr, camera_pairs)
+
+    t_anpr.to_pickle(output_pkl)
 
     return 0
