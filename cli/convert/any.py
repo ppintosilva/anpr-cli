@@ -2,15 +2,13 @@ import os
 import click
 import pandas         as pd
 
-supported_out_formats = ['csv']
-
 @click.argument(
     'input-pkl',
     type = str
 )
 @click.option(
-    '--out-format',
-    type=click.Choice(supported_out_formats),
+    '--to',
+    type=click.Choice(['csv']),
     default = "csv"
 )
 @click.option(
@@ -22,7 +20,7 @@ supported_out_formats = ['csv']
 )
 
 @click.command()
-def trips(
+def pkl(
     input_pkl,
     out_format,
     out_name
@@ -32,7 +30,7 @@ def trips(
     """
 
     # Read networkx graph as pkl
-    trips = pd.read_pickle(input_pkl)
+    df = pd.read_pickle(input_pkl)
 
     # Write output
     if out_name is None:
@@ -40,6 +38,6 @@ def trips(
 
     output = '{}.{}'.format(out_name, out_format)
 
-    trips.to_csv(output, index = False)
+    df.to_csv(output, index = False)
 
     return 0

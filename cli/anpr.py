@@ -10,7 +10,7 @@ from .compute import flows          as flows
 from .compute import trips          as trips
 from .compute import displacement   as displacement
 from .convert import network        as convert_network
-from .convert import trips          as convert_trips
+from .convert import any            as convert_any
 
 
 # Custom class so that we can change the order of subcommands as diplayed
@@ -87,4 +87,4 @@ compute.add_command(trips.avspeed)
 compute.add_command(flows.flows)
 compute.add_command(displacement.displacement)
 convert.add_command(convert_network.network)
-convert.add_command(convert_trips.trips)
+convert.add_command(convert_any.pkl)
