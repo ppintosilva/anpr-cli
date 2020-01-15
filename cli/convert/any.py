@@ -22,7 +22,7 @@ import pandas         as pd
 @click.command()
 def pkl(
     input_pkl,
-    out_format,
+    to,
     out_name
 ):
     """
@@ -36,7 +36,7 @@ def pkl(
     if out_name is None:
         out_name = os.path.splitext(input_pkl)[0]
 
-    output = '{}.{}'.format(out_name, out_format)
+    output = '{}.{}'.format(out_name, to)
 
     df.to_csv(output, index = False)
 
